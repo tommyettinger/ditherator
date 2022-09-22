@@ -8,6 +8,6 @@ C:\d\jvm\graal17\bin\native-image.cmd ^
 -H:DynamicProxyConfigurationFiles=config/proxy-config.json ^
 -H:SerializationConfigurationFiles=config/serialization-config.json ^
 -H:ResourceConfigurationFiles=config/resource-config.json ^
--cp C:/d/GitHub/picocli-4.6.3.jar;ditherator.jar ^
+-cp C:/d/GitHub/picocli-4.6.3.jar;../headless/build/libs/ditherator.jar ^
 --static ^
--jar ditherator.jar
+-jar ../headless/build/libs/ditherator.jar

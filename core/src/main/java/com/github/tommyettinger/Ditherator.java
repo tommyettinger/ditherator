@@ -35,7 +35,6 @@ public class Ditherator extends ApplicationAdapter {
         pixmap = new Pixmap(fh);
         Pixmap basis = new Pixmap(fh);
         ByteBuffer encoded = basis.getPixels();
-        basis.dispose();
         FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
         PaletteReducer bw = new PaletteReducer(new int[]{0, -1, 255});
@@ -51,6 +50,9 @@ public class Ditherator extends ApplicationAdapter {
 //		png.write(Gdx.files.local((DEBUG ? "out/" + name : name) + "/size" + exp + (smoothing ? "smooth/" : "blocky/") + name + "_angle" + i + ".png"), pixmap);
         System.out.println("Rendered to files in " + dir.path());
         System.out.println("Finished in " + TimeUtils.timeSinceMillis(startTime) * 0.001 + " seconds.");
+        basis.dispose();
+        pixmap.dispose();
+        png.dispose();
         Gdx.app.exit();
         System.exit(0);
     }
