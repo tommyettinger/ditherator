@@ -8,6 +8,8 @@ dependencies {
 	implementation project(':core')
 	implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 	implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+	implementation 'info.picocli:picocli:4.6.3'
+	annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
 }
 
 jar {
@@ -21,4 +23,8 @@ jar {
 	doLast {
 		file(archiveFile).setExecutable(true, false)
 	}
+}
+
+compileJava {
+	options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
 }

@@ -4,11 +4,4 @@ eclipse.project.name = appName + '-core'
 dependencies {
 	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.github.tommyettinger:anim8-gdx:$anim8Version"
-    api 'info.picocli:picocli:4.6.3'
-    annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
-}
-
-
-compileJava {
-    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
 }

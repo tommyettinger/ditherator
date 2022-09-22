@@ -12,9 +12,8 @@ import com.github.tommyettinger.anim8.PaletteReducer;
 import java.nio.ByteBuffer;
 
 public class Ditherator extends ApplicationAdapter {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public String name;
-    private PNG8 png;
 
     public Ditherator() {
     }
@@ -25,7 +24,7 @@ public class Ditherator extends ApplicationAdapter {
     @Override
     public void create() {
         long startTime = TimeUtils.millis();
-        png = new PNG8();
+        PNG8 png = new PNG8();
         Pixmap pixmap;
         FileHandle fh;
         if(Gdx.files.absolute(name).exists())
@@ -37,7 +36,7 @@ public class Ditherator extends ApplicationAdapter {
         Pixmap basis = new Pixmap(fh);
         ByteBuffer encoded = basis.getPixels();
         basis.dispose();
-        FileHandle dir = fh.parent().child(baseName);
+        FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
         PaletteReducer bw = new PaletteReducer(new int[]{0, -1, 255});
         png.setPalette(bw);

@@ -5,7 +5,6 @@ import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.github.tommyettinger.Ditherator;
 import picocli.CommandLine;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "ditherator", version = "Ditherator 0.0.1",
@@ -13,7 +12,7 @@ import java.util.concurrent.Callable;
 		mixinStandardHelpOptions = true)
 public class HeadlessLauncher implements Callable<Integer> {
 
-	@CommandLine.Parameters(description = "The absolute or relative path to a .jpg or .png image.", defaultValue = "David.png")
+	@CommandLine.Parameters(description = "The absolute or relative path to a .jpg or .png image.", defaultValue = "David.png", index = "0")
 	public String input = "David.png";
 
 	public static void main(String[] args) {
@@ -27,8 +26,6 @@ public class HeadlessLauncher implements Callable<Integer> {
 		configuration.updatesPerSecond = -1;
 		if(Ditherator.DEBUG)
 			input = "temp/" + input;
-		int nameStart = Math.max(input.lastIndexOf('/'), input.lastIndexOf('\\')) + 1;
-//		input = input.substring(nameStart, input.indexOf('.', nameStart));
 		new HeadlessApplication(new Ditherator(input), configuration){
 			{
 				try {
