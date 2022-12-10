@@ -12,6 +12,7 @@ dependencies {
 	annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
 }
 
+sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
 def os = System.properties['os.name'].toLowerCase()
 
 run {

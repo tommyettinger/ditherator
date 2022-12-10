@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public class Halftoner extends ApplicationAdapter {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public String name;
 
     public Halftoner() {
@@ -32,18 +32,21 @@ public class Halftoner extends ApplicationAdapter {
         else
             fh = Gdx.files.local(name);
         String baseName = fh.nameWithoutExtension();
-        Pixmap basis = new Pixmap(fh);
+        Pixmap basis = new Pixmap(fh), noise = new Pixmap(Gdx.files.internal("blue1024_0.png"));
+        System.out.println(noise.getFormat());
         final int h = basis.getHeight(), w = basis.getWidth();
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         ByteBuffer encoded = basis.getPixels();
         ByteBuffer o = pixmap.getPixels();
         IntBuffer out = o.asIntBuffer();
+        byte[] bn = new byte[1 << 20];
+        noise.getPixels().get(bn);
         FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
         PaletteReducer bw = new PaletteReducer(new int[]{0, -1, 255});
         png.setPalette(bw);
         png.setFlipY(false);
-        byte[] bn = PaletteReducer.TRI_BLUE_NOISE;
+//        byte[] bn = PaletteReducer.TRI_BLUE_NOISE;
         final int MASK = bn.length - 1;
         for (int y = 0, idx = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
