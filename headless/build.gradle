@@ -12,6 +12,18 @@ dependencies {
 	annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
 }
 
+def os = System.properties['os.name'].toLowerCase()
+
+run {
+	workingDir = rootProject.file('.').path
+	setIgnoreExitValue(true)
+
+	if (os.contains('mac')) {
+		// Required to run LWJGL3 Java apps on MacOS
+		jvmArgs += "-XstartOnFirstThread"
+	}
+}
+
 jar {
 	archiveFileName.set(appName+".jar")
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)

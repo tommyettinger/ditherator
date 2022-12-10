@@ -3,6 +3,7 @@ package com.github.tommyettinger.headless;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.github.tommyettinger.Ditherator;
+import com.github.tommyettinger.Halftoner;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
@@ -24,9 +25,9 @@ public class HeadlessLauncher implements Callable<Integer> {
 	public Integer call() {
 		HeadlessApplicationConfiguration configuration = new HeadlessApplicationConfiguration();
 		configuration.updatesPerSecond = -1;
-		if(Ditherator.DEBUG)
+		if(Halftoner.DEBUG)
 			input = "temp/" + input;
-		new HeadlessApplication(new Ditherator(input), configuration){
+		new HeadlessApplication(new Halftoner(input), configuration){
 			{
 				try {
 					mainLoopThread.join();
