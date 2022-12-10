@@ -32,14 +32,15 @@ public class Halftoner extends ApplicationAdapter {
         else
             fh = Gdx.files.local(name);
         String baseName = fh.nameWithoutExtension();
-        Pixmap basis = new Pixmap(fh), noise = new Pixmap(Gdx.files.internal("blue1024_0.png"));
+        Pixmap basis = new Pixmap(fh), noise = new Pixmap(Gdx.files.local("BlueNoise.png"));
+//        Pixmap basis = new Pixmap(fh), noise = new Pixmap(Gdx.files.internal("blue1024_0.png"));
         final int h = basis.getHeight(), w = basis.getWidth();
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
         ByteBuffer encoded = basis.getPixels();
         ByteBuffer o = pixmap.getPixels();
         IntBuffer out = o.asIntBuffer();
-        byte[] bn = new byte[1 << 20];
+        byte[] bn = new byte[noise.getWidth() * noise.getHeight()];
         noise.getPixels().get(bn);
 //        byte[] bn = PaletteReducer.TRI_BLUE_NOISE; // Small 64x64 tiles, with noticeable tiling. Triangular.
 
@@ -67,7 +68,8 @@ public class Halftoner extends ApplicationAdapter {
                 }
             }
             pixmap.setPixels(o);
-            png.writePrecisely(dir.child(baseName + "-BW-" + Math.round(strength * 100) + "-halftone.png"), pixmap, new int[]{0, -1, 255}, false, 100);
+//            png.writePrecisely(dir.child(baseName + "-BW-" + Math.round(strength * 100) + "-halftone.png"), pixmap, new int[]{0, -1, 255}, false, 100);
+            png.writePrecisely(dir.child(baseName + "-BW-" + Math.round(strength * 100) + "-bn-halftone.png"), pixmap, new int[]{0, -1, 255}, false, 100);
         }
         System.out.println("Rendered to files in " + dir.path());
         System.out.println("Finished in " + TimeUtils.timeSinceMillis(startTime) * 0.001 + " seconds.");
