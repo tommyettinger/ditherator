@@ -33,41 +33,42 @@ public class Halftoner extends ApplicationAdapter {
             fh = Gdx.files.local(name);
         String baseName = fh.nameWithoutExtension();
         Pixmap basis = new Pixmap(fh), noise = new Pixmap(Gdx.files.internal("blue1024_0.png"));
-        System.out.println(noise.getFormat());
         final int h = basis.getHeight(), w = basis.getWidth();
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+
         ByteBuffer encoded = basis.getPixels();
         ByteBuffer o = pixmap.getPixels();
         IntBuffer out = o.asIntBuffer();
         byte[] bn = new byte[1 << 20];
         noise.getPixels().get(bn);
+//        byte[] bn = PaletteReducer.TRI_BLUE_NOISE; // Small 64x64 tiles, with noticeable tiling. Triangular.
+
         FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
         PaletteReducer bw = new PaletteReducer(new int[]{0, -1, 255});
         png.setPalette(bw);
         png.setFlipY(false);
-//        byte[] bn = PaletteReducer.TRI_BLUE_NOISE;
         final int MASK = bn.length - 1;
-        for (int y = 0, idx = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
-                int red = encoded.get() & 255, green = encoded.get() & 255, blue = encoded.get() & 255;
-                if(basis.getFormat() == Pixmap.Format.RGBA8888)
-                    encoded.get(); // alpha
-                if(red * 0.2126 + green * 0.7152 + blue * 0.0722 < (bn[idx++ & MASK] + 128))
-//                if(red * 0.2126 + green * 0.7152 + blue * 0.0722 < (bn[idx++ & MASK] + 128) / 255.0)
-                    out.put(255);
-                else
-                    out.put(-1);
+        double[] strengths = {0.25, 0.5, 0.75, 1.0, 1.25, 1.5};
+        for(double strength : strengths) {
+            encoded.position(0);
+            out.position(0);
+            o.position(0);
+            for (int y = 0, idx = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int red = encoded.get() & 255, green = encoded.get() & 255, blue = encoded.get() & 255;
+                    if(basis.getFormat() == Pixmap.Format.RGBA8888)
+                        encoded.get(); // alpha is ignored for now
+                    if(red * 0.2126 + green * 0.7152 + blue * 0.0722 <= // https://en.wikipedia.org/wiki/Rec._709 lightness
+                            ((bn[idx++ & MASK] & 255) - 127.5) * strength + 127.5) // gets an unsigned byte, moves it to the -127.5 to 127.5 range, multiplies by strength, moves back up
+                        out.put(255);
+                    else
+                        out.put(-1);
+                }
             }
+            pixmap.setPixels(o);
+            png.writePrecisely(dir.child(baseName + "-BW-" + Math.round(strength * 100) + "-halftone.png"), pixmap, new int[]{0, -1, 255}, false, 100);
         }
-        pixmap.setPixels(o);
-//        float[] strengths = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f};
-//        for(float strength : strengths) {
-//            png.setDitherStrength(strength);
-//            pixmap.setPixels(encoded);
-//            png.write(dir.child(baseName + "-BW-" + Math.round(strength * 100) + ".png"), pixmap, false, true, 100);
-//        }
-        png.writePrecisely(dir.child(baseName + "-BW-halftone.png"), pixmap, new int[]{0, -1, 255}, false, 100);
         System.out.println("Rendered to files in " + dir.path());
         System.out.println("Finished in " + TimeUtils.timeSinceMillis(startTime) * 0.001 + " seconds.");
         basis.dispose();
