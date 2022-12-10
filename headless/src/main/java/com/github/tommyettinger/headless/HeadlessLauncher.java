@@ -13,8 +13,8 @@ import java.util.concurrent.Callable;
 		mixinStandardHelpOptions = true)
 public class HeadlessLauncher implements Callable<Integer> {
 
-	@CommandLine.Parameters(description = "The absolute or relative path to a .jpg or .png image.", defaultValue = "David.png", index = "0")
-	public String input = "David.png";
+	@CommandLine.Parameters(description = "The absolute or relative path to a .jpg or .png image.", defaultValue = "Roar.jpg", index = "0")
+	public String input = "Roar.jpg";
 
 	public static void main(String[] args) {
 		int exitCode = new picocli.CommandLine(new HeadlessLauncher()).execute(args);

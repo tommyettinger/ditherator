@@ -48,8 +48,9 @@ public class Halftoner extends ApplicationAdapter {
         for (int y = 0, idx = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 int red = encoded.get() & 255, green = encoded.get() & 255, blue = encoded.get() & 255;
-//                encoded.get(); // alpha
-                if(red * 0.2126 + green * 0.7152 + blue * 0.0722 < (bn[idx++ & MASK] + 128) / 255.0)
+                if(basis.getFormat() == Pixmap.Format.RGBA8888)
+                    encoded.get(); // alpha
+                if(red * 0.2126 + green * 0.7152 + blue * 0.0722 < (bn[idx++ & MASK] + 128))
 //                if(red * 0.2126 + green * 0.7152 + blue * 0.0722 < (bn[idx++ & MASK] + 128) / 255.0)
                     out.put(255);
                 else
