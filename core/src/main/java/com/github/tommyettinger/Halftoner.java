@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.github.tommyettinger.anim8.Dithered;
 import com.github.tommyettinger.anim8.PNG8;
 import com.github.tommyettinger.anim8.PaletteReducer;
 
@@ -22,6 +21,7 @@ public class Halftoner extends ApplicationAdapter {
         this.name = name;
     }
 
+    public static final double HPI = Math.PI * 0.125;
     @Override
     public void create() {
         long startTime = TimeUtils.millis();
@@ -61,7 +61,10 @@ public class Halftoner extends ApplicationAdapter {
                     if(basis.getFormat() == Pixmap.Format.RGBA8888)
                         encoded.get(); // alpha is ignored for now
                     if(red * 0.2126 + green * 0.7152 + blue * 0.0722 <= // https://en.wikipedia.org/wiki/Rec._709 lightness
-                            ((bn[idx++ & MASK] & 255) - 127.5) * strength + 127.5) // gets an unsigned byte, moves it to the -127.5 to 127.5 range, multiplies by strength, moves back up
+                            // gets an unsigned byte, moves it to the -127.5 to 127.5 range, multiplies by strength, moves back up
+                            ((bn[idx++ & MASK] & 255) - 127.5) * strength + 127.5 + (Math.cos(x * HPI) * Math.sin(y * HPI)) * 48)
+//                    if(red * 0.2126 + green * 0.7152 + blue * 0.0722 <= // https://en.wikipedia.org/wiki/Rec._709 lightness
+//                            Math.sin(x * HPI) * Math.cos(y * HPI) * 150 * strength + 127.5) //((bn[idx++ & MASK] & 255) - 127.5) * 0.1
                         out.put(255);
                     else
                         out.put(-1);
