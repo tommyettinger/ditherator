@@ -25,9 +25,9 @@ public class HeadlessLauncher implements Callable<Integer> {
 	public Integer call() {
 		HeadlessApplicationConfiguration configuration = new HeadlessApplicationConfiguration();
 		configuration.updatesPerSecond = -1;
-		if(Halftoner.DEBUG)
+		if(Ditherator.DEBUG)
 			input = "temp/" + input;
-		new HeadlessApplication(new Halftoner(input), configuration){
+		new HeadlessApplication(new Ditherator(input), configuration){
 			{
 				try {
 					mainLoopThread.join();

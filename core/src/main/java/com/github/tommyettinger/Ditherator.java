@@ -37,10 +37,10 @@ public class Ditherator extends ApplicationAdapter {
         ByteBuffer encoded = basis.getPixels();
         FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
-        PaletteReducer bw = new PaletteReducer(new int[]{0, -1, 255});
+        PaletteReducer bw = new PaletteReducer(new int[]{0, 0xFFE0F0FF, 0x000048FF});
         png.setPalette(bw);
         png.setFlipY(false);
-        png.setDitherAlgorithm(Dithered.DitherAlgorithm.ROBERTS);
+        png.setDitherAlgorithm(Dithered.DitherAlgorithm.WREN);
         float[] strengths = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f};
         for(float strength : strengths) {
             png.setDitherStrength(strength);
