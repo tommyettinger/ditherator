@@ -11,3 +11,9 @@ that folder will be 8 or more dithered black-and-white images, all variations on
 
 That's all there is to it for now. I might add in palette selection somehow, later, but the goal here was to make this
 as simple and quick as possible to use.
+
+# License
+
+[Apache 2.0](LICENSE).
+
+This uses the CC0-licensed [evening-traffic.jpg](https://pxhere.com/en/photo/1608312) as a test input.

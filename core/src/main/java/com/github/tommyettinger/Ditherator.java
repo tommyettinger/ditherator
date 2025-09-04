@@ -10,6 +10,9 @@ import com.github.tommyettinger.anim8.PNG8;
 import com.github.tommyettinger.anim8.PaletteReducer;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Ditherator extends ApplicationAdapter {
     public static final boolean DEBUG = false;
@@ -37,15 +40,25 @@ public class Ditherator extends ApplicationAdapter {
         ByteBuffer encoded = basis.getPixels();
         FileHandle dir = fh.sibling(baseName);
         dir.mkdirs();
-        PaletteReducer bw = new PaletteReducer(new int[]{0, 0xFFE0F0FF, 0x000048FF});
-        png.setPalette(bw);
-        png.setFlipY(false);
-        png.setDitherAlgorithm(Dithered.DitherAlgorithm.WREN);
-        float[] strengths = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f};
-        for(float strength : strengths) {
-            png.setDitherStrength(strength);
-            pixmap.setPixels(encoded);
-            png.write(dir.child(baseName + "-BW-" + Math.round(strength * 100) + ".png"), pixmap, false, true, 100);
+        LinkedHashMap<String, PaletteReducer> palettes = new LinkedHashMap<>(16);
+        palettes.put("BW", new PaletteReducer(new int[]{0, 255, -1}));
+        palettes.put("GrayPink", new PaletteReducer(new int[]{0, 0xFF10D0FF, 0x182432FF}));
+        palettes.put("OrangeBrown", new PaletteReducer(new int[]{0, 0x402838FF, 0xffb830FF}));
+        palettes.put("BoldOrangeBrown", new PaletteReducer(new int[]{0, 0x402838FF, 0xFFA238FF}));
+        palettes.put("PeachBrown", new PaletteReducer(new int[]{0, 0x402838FF, 0xECD297FF}));
+        palettes.put("GrayGold", new PaletteReducer(new int[]{0, 0x3c3438FF, 0xf4c830FF}));
+        palettes.put("BrownApricot", new PaletteReducer(new int[]{0, 0x402838FF, 0xf8f098FF}));
+        for(Map.Entry<String, PaletteReducer> pal : palettes.entrySet()) {
+            png.setPalette(pal.getValue());
+            png.setFlipY(false);
+            png.setDitherAlgorithm(Dithered.DitherAlgorithm.WREN);
+            float[] strengths = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f};
+            for (float strength : strengths) {
+                png.setDitherStrength(strength);
+                pixmap.setPixels(encoded);
+                png.write(dir.child("out/" + baseName + "-" + pal.getKey() + "-" + png.getDitherAlgorithm().legibleName +
+                        "-" + Math.round(strength * 100) + ".png"), pixmap, false, true, 100);
+            }
         }
 //		png.write(Gdx.files.local((DEBUG ? "out/" + name : name) + "/size" + exp + (smoothing ? "smooth/" : "blocky/") + name + "_angle" + i + ".png"), pixmap);
         System.out.println("Rendered to files in " + dir.path());
