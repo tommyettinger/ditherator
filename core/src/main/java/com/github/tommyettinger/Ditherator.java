@@ -38,7 +38,7 @@ public class Ditherator extends ApplicationAdapter {
         pixmap = new Pixmap(fh);
         Pixmap basis = new Pixmap(fh);
         ByteBuffer encoded = basis.getPixels();
-        FileHandle dir = fh.sibling(baseName);
+        FileHandle dir = fh.sibling("out").child(baseName);
         dir.mkdirs();
         LinkedHashMap<String, PaletteReducer> palettes = new LinkedHashMap<>(16);
         palettes.put("BW", new PaletteReducer(new int[]{0, 255, -1}));
@@ -56,7 +56,7 @@ public class Ditherator extends ApplicationAdapter {
             for (float strength : strengths) {
                 png.setDitherStrength(strength);
                 pixmap.setPixels(encoded);
-                png.write(dir.child("out/" + baseName + "-" + pal.getKey() + "-" + png.getDitherAlgorithm().legibleName +
+                png.write(dir.child(baseName + "-" + pal.getKey() + "-" + png.getDitherAlgorithm().legibleName +
                         "-" + Math.round(strength * 100) + ".png"), pixmap, false, true, 100);
             }
         }
